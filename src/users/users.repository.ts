@@ -9,9 +9,4 @@ export class UsersRepository extends Repository<User> {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {
     super(userModel);
   }
-
-  async register() {
-    const a = await this.find({});
-    console.log('=>(users.repository.ts:15) a', a);
-  }
 }
