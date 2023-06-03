@@ -1,12 +1,14 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersRepository } from '../users/users.repository';
 import { User } from '../users/schemas/user.schema';
 import { bcryptPassword, comparePassword } from '../utils/password';
 import { JwtService } from '@nestjs/jwt';
+import { ObjectId, Types } from 'mongoose';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +26,7 @@ export class AuthService {
     return this.usersRepo.insert({ email, password: bcryptPassword(password) });
   }
 
-  async login(email: string, password: string): Promise<any> {
+  async login(email: string, password: string): Promise<object> {
     const user: User = await this.usersRepo.findOne({ email });
     if (!user) {
       throw new UnauthorizedException();
@@ -33,9 +35,17 @@ export class AuthService {
     if (!checkPassword) {
       throw new UnauthorizedException();
     }
-    // const payload = { sub: user._id, username: user.email };
-    // return {
-    //   access_token: await this.jwtService.signAsync(payload),
-    // };
+    const payload = { sub: user._id, email: user.email };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
+  }
+
+  async validateUserById(userId: Types.ObjectId): Promise<any> {
+    const user = await this.usersRepo.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 }
