@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UsersRepository } from './users.repository';
+import { UsersRepository } from '../users/users.repository';
+import { User } from '../users/schemas/user.schema';
 import { bcryptPassword } from '../utils/password';
-import { User } from './schemas/user.schema';
 
 @Injectable()
 export class AuthService {
