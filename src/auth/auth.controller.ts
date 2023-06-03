@@ -29,10 +29,4 @@ export class AuthController {
   async login(@Body() body: LoginUserDto) {
     return await this.authService.login(body.email, body.password);
   }
-
-  @UseGuards(AuthGuard('jwt'))
-  @Get('profile')
-  getProfile(@Request() req): any {
-    return req.user;
-  }
 }

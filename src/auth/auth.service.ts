@@ -8,7 +8,7 @@ import { UsersRepository } from '../users/users.repository';
 import { User } from '../users/schemas/user.schema';
 import { bcryptPassword, comparePassword } from '../utils/password';
 import { JwtService } from '@nestjs/jwt';
-import { ObjectId, Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class AuthService {
