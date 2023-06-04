@@ -6,7 +6,7 @@ import Repository from '../database/Repository';
 
 @Injectable()
 export class UsersRepository extends Repository<User> {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {
-    super(userModel);
-  }
+    constructor(@InjectModel(User.name) private userModel: Model<User>) {
+        super(userModel);
+    }
 }
