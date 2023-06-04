@@ -1,7 +1,8 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, InternalServerErrorException } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterUserDto } from './dtos/register-user.dto';
-import { LoginUserDto } from './dtos/login-user.dto';
+import { RegisterDto } from './dtos/register.dto';
+import { LoginDto } from './dtos/login.dto';
+import { ForgotPasswordDto } from './dtos/forgotPassword.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -9,7 +10,7 @@ export class AuthController {
 
     @HttpCode(HttpStatus.CREATED)
     @Post('/register')
-    async register(@Body() body: RegisterUserDto): Promise<any> {
+    async register(@Body() body: RegisterDto): Promise<any> {
         try {
             const userCreated = await this.authService.register(body.email, body.password);
             if (!userCreated) {
@@ -25,7 +26,7 @@ export class AuthController {
 
     @HttpCode(HttpStatus.OK)
     @Post('/login')
-    async login(@Body() body: LoginUserDto): Promise<object> {
+    async login(@Body() body: LoginDto): Promise<object> {
         const access_token: string = await this.authService.login(body.email, body.password);
         return {
             success: true,
@@ -33,6 +34,17 @@ export class AuthController {
             result: {
                 access_token,
             },
+        };
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @Post('/forgotPassword')
+    async forgotPassword(@Body() body: ForgotPasswordDto): Promise<any> {
+        const result: string = await this.authService.forgotPassword(body.email);
+        return {
+            success: true,
+            status: HttpStatus.OK,
+            result,
         };
     }
 }

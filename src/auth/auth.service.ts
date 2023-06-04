@@ -4,10 +4,15 @@ import { User } from '../users/schemas/user.schema';
 import { bcryptPassword, comparePassword } from '../utils/password';
 import { JwtService } from '@nestjs/jwt';
 import { Types } from 'mongoose';
+import { ResetPasswordRepository } from './resetPassword.repository';
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly usersRepo: UsersRepository, private jwtService: JwtService) {}
+    constructor(
+        private readonly usersRepo: UsersRepository,
+        private jwtService: JwtService,
+        private readonly resetRepo: ResetPasswordRepository,
+    ) {}
 
     async register(email: string, password: string): Promise<User> {
         const users = await this.usersRepo.find({ email });
@@ -37,5 +42,15 @@ export class AuthService {
             throw new NotFoundException('User not found');
         }
         return user;
+    }
+
+    async forgotPassword(email: string): Promise<any> {
+        const userExist = await this.usersRepo.findOne({ email });
+        if (userExist) {
+            const payload: object = { email };
+            const token: string = await this.jwtService.signAsync(payload);
+            await this.resetRepo.insert({ token, email });
+        }
+        return 'Email Send Successfully';
     }
 }
