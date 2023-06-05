@@ -21,7 +21,7 @@ export class AuthService {
     ) {}
 
     async register(email: string, password: string): Promise<User> {
-        const users = await this.usersRepo.find({ email });
+        const users: User[] = await this.usersRepo.find({ email });
         if (users.length) {
             throw new BadRequestException('email in use');
         }
