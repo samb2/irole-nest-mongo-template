@@ -9,4 +9,8 @@ export class ResetPasswordRepository extends Repository<ResetPassword> {
     constructor(@InjectModel(ResetPassword.name) private userModel: Model<ResetPassword>) {
         super(userModel);
     }
+
+    async tokenUsed(token: string): Promise<any> {
+        return this.findOneAndUpdate({ token }, { use: true });
+    }
 }

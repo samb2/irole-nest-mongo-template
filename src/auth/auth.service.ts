@@ -1,10 +1,17 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+    BadRequestException,
+    ForbiddenException,
+    Injectable,
+    NotFoundException,
+    UnauthorizedException,
+} from '@nestjs/common';
 import { UsersRepository } from '../users/users.repository';
 import { User } from '../users/schemas/user.schema';
 import { bcryptPassword, comparePassword } from '../utils/password';
 import { JwtService } from '@nestjs/jwt';
 import { Types } from 'mongoose';
 import { ResetPasswordRepository } from './resetPassword.repository';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +19,7 @@ export class AuthService {
         private readonly usersRepo: UsersRepository,
         private jwtService: JwtService,
         private readonly resetRepo: ResetPasswordRepository,
+        private readonly configService: ConfigService,
     ) {}
 
     async register(email: string, password: string): Promise<User> {
@@ -52,5 +60,20 @@ export class AuthService {
             await this.resetRepo.insert({ token, email });
         }
         return 'Email Send Successfully';
+    }
+
+    async resetPassword(token, password): Promise<any> {
+        // Check Token
+        const checkVerify: any = this.jwtService.verify(token);
+        const resetPassword = await this.resetRepo.findOne({ token });
+
+        if (!resetPassword || resetPassword.use || checkVerify.email !== resetPassword.email) {
+            throw new ForbiddenException('This Token Expired');
+        }
+        // Update User Password & set reset Password as used
+        await this.usersRepo.findOneAndUpdate({ email: resetPassword.email }, { password: bcryptPassword(password) });
+        await this.resetRepo.tokenUsed(token);
+
+        return 'Your password Changed Successfully';
     }
 }

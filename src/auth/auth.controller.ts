@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dtos/register.dto';
 import { LoginDto } from './dtos/login.dto';
 import { ForgotPasswordDto } from './dtos/forgotPassword.dto';
+import { ResetPasswordDto } from './dtos/resetPassword.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -41,6 +42,17 @@ export class AuthController {
     @Post('/forgotPassword')
     async forgotPassword(@Body() body: ForgotPasswordDto): Promise<any> {
         const result: string = await this.authService.forgotPassword(body.email);
+        return {
+            success: true,
+            status: HttpStatus.OK,
+            result,
+        };
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @Post('/resetPassword')
+    async resetPassword(@Body() body: ResetPasswordDto): Promise<any> {
+        const result: string = await this.authService.resetPassword(body.token, body.password);
         return {
             success: true,
             status: HttpStatus.OK,
