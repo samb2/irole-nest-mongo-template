@@ -11,7 +11,6 @@ import { bcryptPassword, comparePassword } from '../utils/password';
 import { JwtService } from '@nestjs/jwt';
 import { Types } from 'mongoose';
 import { ResetPasswordRepository } from './resetPassword.repository';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +18,6 @@ export class AuthService {
         private readonly usersRepo: UsersRepository,
         private jwtService: JwtService,
         private readonly resetRepo: ResetPasswordRepository,
-        private readonly configService: ConfigService,
     ) {}
 
     async register(email: string, password: string): Promise<User> {
@@ -52,7 +50,7 @@ export class AuthService {
         return user;
     }
 
-    async forgotPassword(email: string): Promise<any> {
+    async forgotPassword(email: string): Promise<string> {
         const userExist = await this.usersRepo.findOne({ email });
         if (userExist) {
             const payload: object = { email };
@@ -62,9 +60,9 @@ export class AuthService {
         return 'Email Send Successfully';
     }
 
-    async resetPassword(token, password): Promise<any> {
+    async resetPassword(token, password): Promise<string> {
         // Check Token
-        const checkVerify: any = this.jwtService.verify(token);
+        const checkVerify: any = await this.jwtService.verify(token);
         const resetPassword = await this.resetRepo.findOne({ token });
 
         if (!resetPassword || resetPassword.use || checkVerify.email !== resetPassword.email) {

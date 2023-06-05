@@ -28,35 +28,41 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Post('/login')
     async login(@Body() body: LoginDto): Promise<object> {
-        const access_token: string = await this.authService.login(body.email, body.password);
-        return {
-            success: true,
-            status: HttpStatus.OK,
-            result: {
-                access_token,
-            },
-        };
+        try {
+            const access_token: string = await this.authService.login(body.email, body.password);
+            return {
+                success: true,
+                status: HttpStatus.OK,
+                result: {
+                    access_token,
+                },
+            };
+        } catch (e) {}
     }
 
     @HttpCode(HttpStatus.OK)
     @Post('/forgotPassword')
     async forgotPassword(@Body() body: ForgotPasswordDto): Promise<any> {
-        const result: string = await this.authService.forgotPassword(body.email);
-        return {
-            success: true,
-            status: HttpStatus.OK,
-            result,
-        };
+        try {
+            const result: string = await this.authService.forgotPassword(body.email);
+            return {
+                success: true,
+                status: HttpStatus.OK,
+                result,
+            };
+        } catch (e) {}
     }
 
     @HttpCode(HttpStatus.OK)
     @Post('/resetPassword')
     async resetPassword(@Body() body: ResetPasswordDto): Promise<any> {
-        const result: string = await this.authService.resetPassword(body.token, body.password);
-        return {
-            success: true,
-            status: HttpStatus.OK,
-            result,
-        };
+        try {
+            const result: string = await this.authService.resetPassword(body.token, body.password);
+            return {
+                success: true,
+                status: HttpStatus.OK,
+                result,
+            };
+        } catch (e) {}
     }
 }
