@@ -2,10 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import helmet from 'helmet';
 
 async function bootstrap() {
     const app: INestApplication = await NestFactory.create(AppModule);
     const configService = app.get(ConfigService); // Obtain the ConfigService instance
+    app.use(helmet());
     app.useGlobalPipes(
         new ValidationPipe({
             whitelist: true,
