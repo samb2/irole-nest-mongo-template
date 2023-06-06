@@ -11,6 +11,7 @@ import { bcryptPassword, comparePassword } from '../utils/password';
 import { JwtService } from '@nestjs/jwt';
 import { Types } from 'mongoose';
 import { ResetPasswordRepository } from './resetPassword.repository';
+import { LoggerService } from '../common/logger.service';
 
 @Injectable()
 export class AuthService {

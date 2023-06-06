@@ -10,6 +10,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ResetPassword, ResetPasswordSchema } from './schemas/reset-password.schema';
 import { ResetPasswordRepository } from './resetPassword.repository';
+import { LoggerService } from '../common/logger.service';
 
 @Module({
     imports: [
@@ -28,6 +29,6 @@ import { ResetPasswordRepository } from './resetPassword.repository';
         }),
     ],
     controllers: [AuthController],
-    providers: [AuthService, UsersRepository, ResetPasswordRepository, JwtStrategy],
+    providers: [AuthService, UsersRepository, ResetPasswordRepository, JwtStrategy, LoggerService],
 })
 export class AuthModule {}
