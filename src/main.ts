@@ -8,6 +8,7 @@ async function bootstrap() {
     const app: INestApplication = await NestFactory.create(AppModule);
     const configService = app.get(ConfigService); // Obtain the ConfigService instance
     app.use(helmet());
+    app.enableCors();
     app.useGlobalPipes(
         new ValidationPipe({
             whitelist: true,
