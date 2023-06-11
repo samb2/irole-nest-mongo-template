@@ -6,6 +6,8 @@ import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
+import * as path from 'path';
 
 @Module({
     imports: [
@@ -16,6 +18,19 @@ import { ThrottlerModule } from '@nestjs/throttler';
         ThrottlerModule.forRoot({
             ttl: 60,
             limit: 10,
+        }),
+        I18nModule.forRoot({
+            fallbackLanguage: 'en',
+            fallbacks: {
+                'en-*': 'en',
+                'fr-*': 'fr',
+            },
+            loaderOptions: {
+                path: path.join(__dirname, '/i18n/'),
+                watch: true,
+            },
+            resolvers: [{ use: QueryResolver, options: ['lang'] }, AcceptLanguageResolver],
+            typesOutputPath: path.join(__dirname, '../src/generated/i18n.generated.ts'),
         }),
         DatabaseModule,
         UsersModule,
