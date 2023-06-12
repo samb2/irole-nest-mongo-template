@@ -5,12 +5,16 @@ import { LoginDto } from './dtos/login.dto';
 import { ForgotPasswordDto } from './dtos/forgotPassword.dto';
 import { ResetPasswordDto } from './dtos/resetPassword.dto';
 import { I18n, I18nContext } from 'nestjs-i18n';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @HttpCode(HttpStatus.CREATED)
+    @ApiNotFoundResponse()
+    @ApiBadRequestResponse()
+    @ApiCreatedResponse()
     @Post('/register')
     async register(@Body() body: RegisterDto, @I18n() i18n: I18nContext): Promise<any> {
         const userCreated = await this.authService.register(body.email, body.password, i18n);

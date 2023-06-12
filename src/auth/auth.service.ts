@@ -11,7 +11,7 @@ import { bcryptPassword, comparePassword } from '../utils/password';
 import { JwtService } from '@nestjs/jwt';
 import { Types } from 'mongoose';
 import { ResetPasswordRepository } from './resetPassword.repository';
-import { I18nTranslations } from '../generated/i18n.generated';
+import { I18nContext } from 'nestjs-i18n';
 
 @Injectable()
 export class AuthService {
@@ -21,10 +21,10 @@ export class AuthService {
         private readonly resetRepo: ResetPasswordRepository,
     ) {}
 
-    async register(email: string, password: string, lang: I18nTranslations): Promise<User> {
+    async register(email: string, password: string, lang: I18nContext): Promise<User> {
         const users: User[] = await this.usersRepo.find({ email });
         if (users.length) {
-            throw new BadRequestException(lang.test['email-use']);
+            throw new BadRequestException(lang.t('test.email-use'));
         }
         // Hash password
         return this.usersRepo.insert({ email, password: bcryptPassword(password) });
